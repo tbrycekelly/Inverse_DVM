@@ -24,3 +24,63 @@ We used extensive ecological and biogeochemical measurements obtained from quasi
 
 
 
+## Usage
+
+The general workflow for solving an LIEM using limSolve consists of two steps: the setup of the model and the running of the model.
+
+```R
+model = ReadModel('Model.xls', 'Constraints.xls',
+					num.flows = 141, num.exact = 24,
+                    num.approx = 18, num.ineq = 138)
+                    
+result = RunModel(model, iter = 1e8, out.length = 1e5, burn.length = 1e8, jmp = 1.2)
+```
+
+
+
+Before the model can be run, there are several prerequisites. 
+
+**Libraries**
+
+* limSolve
+* MASS
+* XLConnect
+
+
+
+**Dealing with Odds & Ends**
+
+In order to allow the matrices to be adjusted when required on a cycle-by-cycle basis I included several flagged values that could be easily replaced (e.g. the entry "24.24" in matrix G was replaced by a respiration specific term that changed each cycle). 
+
+```R
+## Cycle specifics
+jmp = 1.5
+iter = 1e7
+out.length = 10000
+burn.length = 1e7
+resp.f = 1.37
+
+## Read in model
+model = ReadModel("./input/Model.xls", "./input/Constraints.xls",
+                  model.name="Subduction", constraint.name = 'Data001',
+                  cycle, 141, 24, 18, 138)
+
+## Odds & Ends (substitude values in G)
+model$G[model$G == 24.24] = -resp.f[cycle]
+model$G[model$G == 27.27] = -resp.f[cycle]
+
+## Run model
+res = RunModel(model, iter = iter, out.length = out.length,
+               burn.length = burn.length, jmp = jmp)
+```
+
+
+
+# Contact Us
+
+If you wish to learn more about inverse modeling or need help getting any of this code to work, please don't hesitate to reach out to us at tbk14@fsu.edu or mstukel@fsu.edu. While the code here is a special case, we have additional, generalized code for solving inverse problems elsewhere (e.g. [15N-inclusive LIEM](<https://github.com/tbrycekelly/N15-LIM>)).
+
+
+
+You can also learn more about our research here ([Stukel Lab](<http://myweb.fsu.edu/mstukel/>)) or here ([TBK](http://about.tkelly.org)).
+
