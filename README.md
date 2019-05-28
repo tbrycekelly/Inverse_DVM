@@ -66,13 +66,15 @@ model = ReadModel("./input/Model.xls", "./input/Constraints.xls",
                   cycle, 141, 24, 18, 138)
 
 ## Odds & Ends (substitude values in G)
-model$G[model$G == 24.24] = -resp.f[cycle]
-model$G[model$G == 27.27] = -resp.f[cycle]
+model$G[model$G == 24.24] = -resp.f
+model$G[model$G == 27.27] = -resp.f
 
 ## Run model
 res = RunModel(model, iter = iter, out.length = out.length,
                burn.length = burn.length, jmp = jmp)
 ```
+
+---
 
 
 
